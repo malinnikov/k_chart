@@ -19,7 +19,7 @@ abstract class BaseChartPainter extends CustomPainter {
   SecondaryState secondaryState;
 
   bool volHidden;
-  double scaleX = 1.0, scrollX = 0.0, selectX;
+  double scaleX = 1.0, scrollX = 0.0, selectX, selectY;
   bool isLongPress = false;
   bool isLine;
 
@@ -51,6 +51,7 @@ abstract class BaseChartPainter extends CustomPainter {
     required this.scrollX,
     required this.isLongPress,
     required this.selectX,
+    required this.selectY,
     this.mainState = MainState.MA,
     this.volHidden = false,
     this.secondaryState = SecondaryState.MACD,
@@ -331,7 +332,7 @@ abstract class BaseChartPainter extends CustomPainter {
       (translateX + mTranslateX) * scaleX;
 
   TextStyle getTextStyle(Color color) {
-    return TextStyle(fontSize: 10.0, color: color);
+    return TextStyle(fontSize: 16.0, color: color);
   }
 
   @override

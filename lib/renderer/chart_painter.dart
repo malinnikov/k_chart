@@ -38,6 +38,7 @@ class ChartPainter extends BaseChartPainter {
     required scrollX,
     required isLongPass,
     required selectX,
+    required selectY,
     mainState,
     volHidden,
     secondaryState,
@@ -55,6 +56,7 @@ class ChartPainter extends BaseChartPainter {
             scrollX: scrollX,
             isLongPress: isLongPass,
             selectX: selectX,
+            selectY: selectY,
             mainState: mainState,
             volHidden: volHidden,
             secondaryState: secondaryState,
@@ -217,14 +219,15 @@ class ChartPainter extends BaseChartPainter {
     var index = calculateSelectedX(selectX);
     KLineEntity point = getItem(index);
 
-    TextPainter tp = getTextPainter(point.close, chartColors.crossTextColor);
+    TextPainter tp = getTextPainter(mMainRenderer.getPrice(selectY).toStringAsFixed(2), chartColors.crossTextColor);
     double textHeight = tp.height;
     double textWidth = tp.width;
 
     double w1 = 5;
     double w2 = 3;
     double r = textHeight / 2 + w2;
-    double y = getMainY(point.close);
+//    double y = getMainY(point.close);
+    double y = selectY;
     double x;
     bool isLeft = false;
     if (translateXtoX(getX(index)) < mWidth / 2) {
@@ -373,7 +376,8 @@ class ChartPainter extends BaseChartPainter {
       ..strokeWidth = this.chartStyle.vCrossWidth
       ..isAntiAlias = true;
     double x = getX(index);
-    double y = getMainY(point.close);
+//    double y = getMainY(point.close);
+    double y = selectY;
     // k线图竖线
     canvas.drawLine(Offset(x, mTopPadding),
         Offset(x, size.height - mBottomPadding), paintY);
@@ -414,6 +418,7 @@ class ChartPainter extends BaseChartPainter {
       mFormats);
 
   double getMainY(double y) => mMainRenderer.getY(y);
+  double getPrice(double y) => mMainRenderer.getPrice(y);
 
   /// 点是否在SecondaryRect中
   bool isInSecondaryRect(Offset point) {

@@ -46,32 +46,33 @@ class KChartWidget extends StatefulWidget {
   final double flingRatio;
   final Curve flingCurve;
   final Function(bool)? isOnDrag;
+  final Function(double)? onPriceSelected;
   final ChartColors chartColors;
   final ChartStyle chartStyle;
 
-  KChartWidget(
-    this.datas,
-    this.chartStyle,
-    this.chartColors, {
-    this.mainState = MainState.MA,
-    this.secondaryState = SecondaryState.MACD,
-    this.onSecondaryTap,
-    this.volHidden = false,
-    this.isLine = false,
-    this.hideGrid = false,
-    this.isChinese = false,
-    this.showNowPrice = true,
-    this.translations = kChartTranslations,
-    this.timeFormat = TimeFormat.YEAR_MONTH_DAY,
-    this.onLoadMore,
-    this.bgColor,
-    this.fixedLength = 2,
-    this.maDayList = const [5, 10, 20],
-    this.flingTime = 600,
-    this.flingRatio = 0.5,
-    this.flingCurve = Curves.decelerate,
-    this.isOnDrag,
-  });
+  KChartWidget(this.datas,
+      this.chartStyle,
+      this.chartColors, {
+        this.mainState = MainState.MA,
+        this.secondaryState = SecondaryState.MACD,
+        this.onSecondaryTap,
+        this.volHidden = false,
+        this.isLine = false,
+        this.hideGrid = false,
+        this.isChinese = false,
+        this.showNowPrice = true,
+        this.translations = kChartTranslations,
+        this.timeFormat = TimeFormat.YEAR_MONTH_DAY,
+        this.onLoadMore,
+        this.bgColor,
+        this.fixedLength = 2,
+        this.maDayList = const [5, 10, 20],
+        this.flingTime = 600,
+        this.flingRatio = 0.5,
+        this.flingCurve = Curves.decelerate,
+        this.isOnDrag,
+        this.onPriceSelected,
+      });
 
   @override
   _KChartWidgetState createState() => _KChartWidgetState();
@@ -79,7 +80,10 @@ class KChartWidget extends StatefulWidget {
 
 class _KChartWidgetState extends State<KChartWidget>
     with TickerProviderStateMixin {
-  double mScaleX = 1.0, mScrollX = 0.0, mSelectX = 0.0;
+  double mScaleX = 1.0,
+      mScrollX = 0.0,
+      mSelectX = 0.0,
+      mSelectY = 0.0;
   StreamController<InfoWindowEntity?>? mInfoWindowStream;
   double mWidth = 0;
   AnimationController? _controller;
@@ -90,7 +94,9 @@ class _KChartWidgetState extends State<KChartWidget>
   }
 
   double _lastScale = 1.0;
-  bool isScale = false, isDrag = false, isLongPress = false;
+  bool isScale = false,
+      isDrag = false,
+      isLongPress = false;
 
   @override
   void initState() {
@@ -101,7 +107,10 @@ class _KChartWidgetState extends State<KChartWidget>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    mWidth = MediaQuery.of(context).size.width;
+    mWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
   }
 
   @override
@@ -124,6 +133,7 @@ class _KChartWidgetState extends State<KChartWidget>
       scaleX: mScaleX,
       scrollX: mScrollX,
       selectX: mSelectX,
+      selectY: mSelectY,
       isLongPass: isLongPress,
       mainState: widget.mainState,
       volHidden: widget.volHidden,
@@ -173,14 +183,16 @@ class _KChartWidgetState extends State<KChartWidget>
       },
       onLongPressStart: (details) {
         isLongPress = true;
-        if (mSelectX != details.globalPosition.dx) {
-          mSelectX = details.globalPosition.dx;
+        if (mSelectX != details.localPosition.dx || mSelectY != details.localPosition.dy) {
+          mSelectX = details.localPosition.dx;
+          mSelectY = details.localPosition.dy;
           notifyChanged();
         }
       },
       onLongPressMoveUpdate: (details) {
-        if (mSelectX != details.globalPosition.dx) {
-          mSelectX = details.globalPosition.dx;
+        if (mSelectX != details.localPosition.dx || mSelectY != details.localPosition.dy) {
+          mSelectX = details.localPosition.dx;
+          mSelectY = details.localPosition.dy;
           notifyChanged();
         }
       },
@@ -188,7 +200,11 @@ class _KChartWidgetState extends State<KChartWidget>
         isLongPress = false;
         mInfoWindowStream?.sink.add(null);
         notifyChanged();
-      },
+
+        widget.onPriceSelected?.call(_painter.getPrice(mSelectY));
+        mSelectX = 0;
+        mSelectY = 0;
+        },
       child: Stack(
         children: <Widget>[
           CustomPaint(
@@ -224,7 +240,7 @@ class _KChartWidgetState extends State<KChartWidget>
     aniX = null;
     aniX = Tween<double>(begin: mScrollX, end: x * widget.flingRatio + mScrollX)
         .animate(CurvedAnimation(
-            parent: _controller!.view, curve: widget.flingCurve));
+        parent: _controller!.view, curve: widget.flingCurve));
     aniX!.addListener(() {
       mScrollX = aniX!.value;
       if (mScrollX <= 0) {
@@ -327,8 +343,11 @@ class _KChartWidgetState extends State<KChartWidget>
     );
   }
 
-  String getDate(int? date) => dateFormat(
-      DateTime.fromMillisecondsSinceEpoch(
-          date ?? DateTime.now().millisecondsSinceEpoch),
-      widget.timeFormat);
+  String getDate(int? date) =>
+      dateFormat(
+          DateTime.fromMillisecondsSinceEpoch(
+              date ?? DateTime
+                  .now()
+                  .millisecondsSinceEpoch),
+          widget.timeFormat);
 }
