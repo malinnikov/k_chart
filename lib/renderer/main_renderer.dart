@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../entity/candle_entity.dart';
@@ -12,7 +14,7 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
 
   //绘制的内容区域
   late Rect _contentRect;
-  double _contentPadding = 5.0;
+  double _contentPadding = 0.0;
   List<int> maDayList;
   final ChartStyle chartStyle;
   final ChartColors chartColors;

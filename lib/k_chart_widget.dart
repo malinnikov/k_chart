@@ -28,6 +28,7 @@ class KChartWidget extends StatefulWidget {
   final MainState mainState;
   final bool volHidden;
   final SecondaryState secondaryState;
+  final GestureScaleUpdateCallback? onScale;
   final Function()? onSecondaryTap;
   final bool isLine;
   final bool hideGrid;
@@ -55,6 +56,7 @@ class KChartWidget extends StatefulWidget {
       this.chartColors, {
         this.mainState = MainState.MA,
         this.secondaryState = SecondaryState.MACD,
+        this.onScale,
         this.onSecondaryTap,
         this.volHidden = false,
         this.isLine = false,
@@ -173,6 +175,7 @@ class _KChartWidgetState extends State<KChartWidget>
         isScale = true;
       },
       onScaleUpdate: (details) {
+        widget.onScale?.call(details);
         if (isDrag || isLongPress) return;
         mScaleX = (_lastScale * details.scale).clamp(0.5, 2.2);
         notifyChanged();
