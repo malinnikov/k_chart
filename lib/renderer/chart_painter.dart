@@ -1,4 +1,5 @@
 import 'dart:async' show StreamSink;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:k_chart/entity/mark_entry.dart';
@@ -85,10 +86,23 @@ class ChartPainter extends BaseChartPainter {
       fixedLength =
           NumberUtil.getMaxDecimalLength(t.open, t.close, t.high, t.low);
     }
+
+    double minMarkerValue = mMainMinValue;
+    double maxMarkerValue = mMainMaxValue;
+
+    if (marks != null && marks!.length > 0) {
+      minMarkerValue = marks
+          ?.reduce((m1, m2) => m1.price < m2.price ? m1 : m2)
+          .price ?? mMainMinValue;
+      maxMarkerValue = marks
+          ?.reduce((m1, m2) => m1.price > m2.price ? m1 : m2)
+          .price ?? mMainMaxValue;
+    }
+
     mMainRenderer = MainRenderer(
       mMainRect,
-      mMainMaxValue,
-      mMainMinValue,
+      max(mMainMaxValue, maxMarkerValue),
+      min(mMainMinValue, minMarkerValue),
       mTopPadding,
       mainState,
       isLine,
