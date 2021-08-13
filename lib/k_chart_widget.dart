@@ -5,6 +5,8 @@ import 'package:k_chart/chart_translations.dart';
 import 'package:k_chart/extension/map_ext.dart';
 import 'package:k_chart/flutter_k_chart.dart';
 
+import 'entity/mark_entry.dart';
+
 enum MainState { MA, BOLL, NONE }
 enum SecondaryState { MACD, KDJ, RSI, WR, CCI, NONE }
 
@@ -40,7 +42,7 @@ class KChartWidget extends StatefulWidget {
 
   //当屏幕滚动到尽头会调用，真为拉到屏幕右侧尽头，假为拉到屏幕左侧尽头
   final Function(bool)? onLoadMore;
-  final List<Color>? bgColor;
+  final List<Color> bgColor;
   final int fixedLength;
   final List<int> maDayList;
   final int flingTime;
@@ -50,6 +52,7 @@ class KChartWidget extends StatefulWidget {
   final Function(double)? onPriceSelected;
   final ChartColors chartColors;
   final ChartStyle chartStyle;
+  List<MarkEntry>? marks;
 
   KChartWidget(this.datas,
       this.chartStyle,
@@ -66,7 +69,7 @@ class KChartWidget extends StatefulWidget {
         this.translations = kChartTranslations,
         this.timeFormat = TimeFormat.YEAR_MONTH_DAY,
         this.onLoadMore,
-        this.bgColor,
+        required this.bgColor,
         this.fixedLength = 2,
         this.maDayList = const [5, 10, 20],
         this.flingTime = 600,
@@ -74,6 +77,7 @@ class KChartWidget extends StatefulWidget {
         this.flingCurve = Curves.decelerate,
         this.isOnDrag,
         this.onPriceSelected,
+        this.marks,
       });
 
   @override
@@ -147,6 +151,7 @@ class _KChartWidgetState extends State<KChartWidget>
       bgColor: widget.bgColor,
       fixedLength: widget.fixedLength,
       maDayList: widget.maDayList,
+      marks: widget.marks,
     );
     return GestureDetector(
       onTapUp: (details) {
@@ -207,7 +212,7 @@ class _KChartWidgetState extends State<KChartWidget>
         widget.onPriceSelected?.call(_painter.getPrice(mSelectY));
         mSelectX = 0;
         mSelectY = 0;
-        },
+      },
       child: Stack(
         children: <Widget>[
           CustomPaint(

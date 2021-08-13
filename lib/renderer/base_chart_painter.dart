@@ -102,6 +102,7 @@ abstract class BaseChartPainter extends CustomPainter {
       drawText(canvas, datas!.last, 5);
       drawMaxAndMin(canvas);
       drawNowPrice(canvas);
+      drawMarks(canvas);
     }
     canvas.restore();
   }
@@ -131,6 +132,9 @@ abstract class BaseChartPainter extends CustomPainter {
 
   //画当前价格
   void drawNowPrice(Canvas canvas);
+
+  void drawMarks(Canvas canvas);
+
 
   //交叉线值
   void drawCrossLineText(Canvas canvas, Size size);
