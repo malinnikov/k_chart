@@ -257,30 +257,29 @@ class ChartPainter extends BaseChartPainter {
     if (translateXtoX(getX(index)) < mWidth / 2) {
       isLeft = false;
       x = 1;
-      Path path = new Path();
-      path.moveTo(x, y - r);
-      path.lineTo(x, y + r);
-      path.lineTo(textWidth + 2 * w1, y + r);
-      path.lineTo(textWidth + 2 * w1 + w2, y);
-      path.lineTo(textWidth + 2 * w1, y - r);
-      path.close();
-      canvas.drawPath(path, selectPointPaint);
-      canvas.drawPath(path, selectorBorderPaint);
-      tp.paint(canvas, Offset(x + w1, y - textHeight / 2));
     } else {
       isLeft = true;
       x = mWidth - textWidth - 1 - 2 * w1 - w2;
-      Path path = new Path();
-      path.moveTo(x, y);
-      path.lineTo(x + w2, y + r);
-      path.lineTo(mWidth - 2, y + r);
-      path.lineTo(mWidth - 2, y - r);
-      path.lineTo(x + w2, y - r);
-      path.close();
-      canvas.drawPath(path, selectPointPaint);
-      canvas.drawPath(path, selectorBorderPaint);
-      tp.paint(canvas, Offset(x + w1 + w2, y - textHeight / 2));
     }
+
+    x = translateXtoX(getX(index)) + 50;
+    double textEndX = textWidth + 16;
+
+    if (x + textEndX > mWidth) {
+      x = 30;
+      textEndX = textWidth + 16;
+    }
+
+    Path path = new Path();
+    path.moveTo(x, y - r);
+    path.lineTo(x + textEndX, y - r);
+    path.lineTo(x + textEndX, y + r);
+    path.lineTo(x, y + r);
+    path.lineTo(x, y - r);
+    path.close();
+    canvas.drawPath(path, selectPointPaint);
+    canvas.drawPath(path, selectorBorderPaint);
+    tp.paint(canvas, Offset(x + w1 + w2, y - textHeight / 2));
 
     TextPainter dateTp = getTextPainter(getDate(point.time), chartColors.crossTextColor);
     textWidth = dateTp.width;
@@ -305,7 +304,7 @@ class ChartPainter extends BaseChartPainter {
 
     dateTp.paint(canvas, Offset(x - textWidth / 2, y));
     //长按显示这条数据详情
-    sink?.add(InfoWindowEntity(point, isLeft: isLeft));
+    sink?.add(InfoWindowEntity(point, isLeft: isLeft, isTop: selectY > mMainRect.height / 2));
   }
 
   @override

@@ -92,6 +92,7 @@ class _KChartWidgetState extends State<KChartWidget>
       mSelectY = 0.0;
   StreamController<InfoWindowEntity?>? mInfoWindowStream;
   double mWidth = 0;
+  double mHeight = 0;
   AnimationController? _controller;
   Animation<double>? aniX;
 
@@ -117,6 +118,10 @@ class _KChartWidgetState extends State<KChartWidget>
         .of(context)
         .size
         .width;
+    mHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
   }
 
   @override
@@ -303,9 +308,9 @@ class _KChartWidgetState extends State<KChartWidget>
           ];
           return Container(
             margin: EdgeInsets.only(
-                left: snapshot.data!.isLeft ? 4 : mWidth - mWidth / 3 - 4,
-                top: 25),
-            width: mWidth / 3,
+                left: snapshot.data!.isLeft ? 4 : mWidth - mWidth / 4 - 4,
+                top: snapshot.data!.isTop ? 25 : mHeight - mHeight / 2 - 4),
+            width: mWidth / 4,
             decoration: BoxDecoration(
                 color: widget.chartColors.selectFillColor,
                 border: Border.all(
