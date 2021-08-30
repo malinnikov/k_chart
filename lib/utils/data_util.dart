@@ -10,12 +10,12 @@ class DataUtil {
       [List<int> maDayList = const [5, 10, 20], int n = 20, k = 2]) {
     calcMA(dataList, maDayList);
     calcBOLL(dataList, n, k);
-    calcVolumeMA(dataList);
-    calcKDJ(dataList);
-    calcMACD(dataList);
-    calcRSI(dataList);
-    calcWR(dataList);
-    calcCCI(dataList);
+//    calcVolumeMA(dataList);
+//    calcKDJ(dataList);
+//    calcMACD(dataList);
+//    calcRSI(dataList);
+//    calcWR(dataList);
+//    calcCCI(dataList);
   }
 
   static calcMA(List<KLineEntity> dataList, List<int> maDayList) {

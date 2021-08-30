@@ -445,8 +445,9 @@ class ChartPainter extends BaseChartPainter {
           Offset(startX + mWidth, y),
           paint);
 
+
       TextPainter tp = getTextPainter(
-          markEntry.price.toStringAsFixed(fixedLength), Colors.white);
+          markEntry.title, Colors.white);
 
       double left = mWidth / 3;
       double top = y - tp.height / 2;
