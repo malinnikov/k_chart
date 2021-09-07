@@ -98,11 +98,11 @@ abstract class BaseChartPainter extends CustomPainter {
       drawChart(canvas, size);
       drawRightText(canvas);
       drawDate(canvas, size);
-      if (isLongPress == true) drawCrossLineText(canvas, size);
       drawText(canvas, datas!.last, 5);
       drawMaxAndMin(canvas);
       drawNowPrice(canvas);
       drawMarks(canvas);
+      if (isLongPress == true) drawCrossLineText(canvas, size);
     }
     canvas.restore();
   }

@@ -243,7 +243,7 @@ class ChartPainter extends BaseChartPainter {
     KLineEntity point = getItem(index);
 
     TextPainter tp = getTextPainter(
-        mMainRenderer.getPrice(selectY).toStringAsFixed(2), chartColors.crossTextColor);
+        mMainRenderer.getPrice(selectY).toStringAsFixed(6), chartColors.crossTextColor);
     double textHeight = tp.height;
     double textWidth = tp.width;
 
